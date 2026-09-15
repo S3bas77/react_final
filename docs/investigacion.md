@@ -97,6 +97,7 @@ export default defineConfig({
     headless: true,
   },
   reporter: [['html', { open: 'never' }], ['list']],
+  timeout: 30_000,
 });
 ```
 

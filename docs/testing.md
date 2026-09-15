@@ -223,7 +223,9 @@ test('T-03: tiempo decrece (polling UI)', async ({ page }) => {
 
   // Leer tiempo inicial
   const t1text = await page.getByTestId('time-remaining').textContent();
-  const t1 = Number(t1text?.trim());
+  expect(t1text).not.toBeNull();           // null-guard: el elemento debe existir y tener texto
+  const t1 = Number(t1text!.trim());
+  expect(Number.isNaN(t1)).toBe(false);    // guard: asegurar que es un número válido, no NaN
   expect(t1).toBeGreaterThan(0);
 
   // Esperar más de 1 segundo
@@ -231,7 +233,9 @@ test('T-03: tiempo decrece (polling UI)', async ({ page }) => {
 
   // El tiempo debe haber decrementado
   const t2text = await page.getByTestId('time-remaining').textContent();
-  const t2 = Number(t2text?.trim());
+  expect(t2text).not.toBeNull();
+  const t2 = Number(t2text!.trim());
+  expect(Number.isNaN(t2)).toBe(false);
   expect(t2).toBeLessThan(t1);
 });
 ```
@@ -457,18 +461,27 @@ test('T-06 (local): finalización via force-end', async ({ page, request }) => {
 test('T-06 (local): pantalla de resultado via polling', async ({ page, request }) => {
   if (process.env.TEST_ENV === 'production') test.skip();
 
-  // Crear partida (la UI la creará en el siguiente paso)
+  // Interceptar la respuesta de POST /api/game que hace el frontend al pulsar el botón,
+  // para obtener el gameId que el frontend está usando en su polling.
+  let frontendGameId: string | null = null;
+
+  page.waitForResponse(
+    res => res.url().includes('/api/game') && res.request().method() === 'POST' && !res.url().includes('/action') && !res.url().includes('/force-end')
+  ).then(async res => {
+    const body = await res.json();
+    frontendGameId = body.gameId ?? null;
+  }).catch(() => { /* ignorar si la promesa no resuelve antes del timeout */ });
+
   await page.goto('/');
   await page.getByTestId('start-button').click();
-  await expect(page.getByTestId('arena')).toBeVisible();
+  await expect(page.getByTestId('arena')).toBeVisible({ timeout: 3000 });
 
-  // Interceptar el gameId que usa el frontend
-  // Estrategia: el gameId está en el estado del polling.
-  // Forzamos el fin de la partida activa reemplazándola
-  // y esperamos que el polling del frontend lo detecte.
-  const res = await request.post('/api/game', { data: {} });
-  const { gameId } = await res.json();
-  await request.post(`/api/game/${gameId}/test/force-end`);
+  // Esperar a que frontendGameId esté disponible (la respuesta debe haber llegado ya)
+  expect(frontendGameId).not.toBeNull();
+
+  // Forzar el fin de la partida que el frontend está observando
+  const forceRes = await request.post(`/api/game/${frontendGameId}/test/force-end`);
+  expect(forceRes.ok()).toBe(true);
 
   // El frontend detectará finished en el siguiente poll (máx 500 ms)
   await expect(page.getByTestId('result-screen')).toBeVisible({ timeout: 2000 });

@@ -100,7 +100,7 @@ tests/e2e/helpers/     (vacío)
 
 **Implementar exactamente:**
 
-`package.json` raíz:
+`package.json` raíz (versión inicial — se añade `devDependencies` en TASK-037):
 ```json
 {
   "name": "reactor-rush",
@@ -2347,6 +2347,7 @@ Local/CI:
 - `POST /api/game`.
 - `POST .../test/force-end`.
 - Verificar `state.status === 'finished'` y resultado válido.
+- **Segunda prueba UI local (pantalla de resultado):** usar `page.waitForResponse()` para capturar la respuesta del `POST /api/game` que hace el frontend al pulsar el botón de inicio, y así obtener el `gameId` real que el frontend está usando. Ver implementación completa en `docs/testing.md` T-06.
 - Verificar `data-testid="result-screen"` visible en ≤2s.
 
 Producción:

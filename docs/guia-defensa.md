@@ -181,7 +181,7 @@ Ver sección siguiente.
 
 ### "¿Por qué `force-end` no está disponible en producción?"
 
-"Porque si lo estuviera, cualquier usuario podría terminar partidas ajenas o en general manipular el estado del juego desde la consola del navegador con un simple `fetch`. La solución es no registrar la ruta en Express cuando `NODE_ENV !== 'test'`. El archivo `routes/test.ts` directamente no se importa en producción, así que el endpoint no existe ni siquiera como código cargado."
+"Porque si lo estuviera, cualquier usuario podría terminar partidas ajenas o en general manipular el estado del juego desde la consola del navegador con un simple `fetch`. La solución es no registrar la ruta en Express cuando `NODE_ENV !== 'test'`. El módulo `routes/test.ts` se importa estáticamente, pero la llamada `app.use('/api/game', testRouter)` solo se ejecuta dentro del bloque `if (process.env.NODE_ENV === 'test')`. En producción el módulo está cargado en memoria pero ninguna URL lleva a él, por lo que el endpoint es efectivamente inaccesible."
 
 **Referencia:** `docs/decisiones.md` §12, `backend/src/index.ts`
 

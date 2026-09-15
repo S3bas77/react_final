@@ -150,7 +150,12 @@ jobs:
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
 
+      # Verificación del health check en producción.
+      # ACTIVAR este paso después del primer deploy exitoso:
+      # 1. Reemplazar <PRODUCTION_URL> por la URL real obtenida de Railway.
+      # 2. Cambiar `if: false` por `if: true` (o eliminar la condición).
       - name: Verify health check
+        if: false   # <- desactivado hasta tener PRODUCTION_URL real
         run: |
           sleep 10
           curl -f <PRODUCTION_URL>/health || exit 1
