@@ -7,7 +7,10 @@
 > - **VERIFICADO**: confirmado con tests E2E, lint, build o comprobaciones HTTP directas.
 > - **IMPLEMENTADO**: el código existe y compila/lint-ea, pero no dispone de una verificación
 >   automatizada específica o depende de un entorno externo (p. ej. GitHub Actions, Railway).
-> - **PENDIENTE**: requiere el primer deploy real para obtener `<PRODUCTION_URL>`.
+> - **PENDIENTE**: requiere acción externa (actualmente no queda ningún ítem en este estado).
+>
+> TASK-047 (deploy en Railway) y TASK-048 (E2E de producción) están **COMPLETADAS**.
+> Producción: `https://reactor-rush-production.up.railway.app` — `force-end` no disponible.
 
 ---
 
@@ -123,8 +126,8 @@
 | T-06 finalización | `docs/testing.md` T-06 | `tests/e2e/finish.spec.ts` | VERIFICADO |
 | Tests headless en CI | `docs/testing.md` §CI | `e2e.yml` | IMPLEMENTADO |
 | Tests headed localmente | `docs/testing.md` §headless | `npm run test:e2e:headed` | IMPLEMENTADO |
-| Tests contra producción (T-04 adaptativo) | `docs/testing.md` T-04 prod | BFS en `helpers/bfs.ts` | IMPLEMENTADO |
-| Tests contra producción (T-06 real) | `docs/testing.md` T-06 prod | Acumulación de puntos | IMPLEMENTADO |
+| Tests contra producción (T-04 adaptativo) | `docs/testing.md` T-04 prod | BFS en `helpers/bfs.ts` | VERIFICADO |
+| Tests contra producción (T-06 real) | `docs/testing.md` T-06 prod | Acumulación de puntos | VERIFICADO |
 | Sin uso de `force-end` en producción | `docs/decisiones.md` §12 | Ramas condicionales en tests | VERIFICADO |
 | `data-testid` en componentes | `docs/testing.md` §selectores | Componentes de React | VERIFICADO |
 
@@ -134,12 +137,12 @@
 
 | Criterio | Archivo de evidencia | Archivo/Recurso | Estado |
 |---|---|---|---|
-| Deployment en Railway | `docs/deployment.md` | `railway.toml` | IMPLEMENTADO |
-| URL pública accesible | `docs/deployment.md` | `<PRODUCTION_URL>` | PENDIENTE (tras primer deploy) |
+| Deployment en Railway | `docs/deployment.md` | `railway.toml` | VERIFICADO |
+| URL pública accesible | `docs/deployment.md` | `https://reactor-rush-production.up.railway.app` | VERIFICADO |
 | Build automático en CI/CD | `docs/deployment.md` | `.github/workflows/deploy.yml` | IMPLEMENTADO |
 | Variables de entorno documentadas | `docs/deployment.md`, `docs/decisiones.md` | `docs/deployment.md` §variables | VERIFICADO |
 | Health check funcional | `docs/deployment.md` | `GET /health` en `index.ts` | VERIFICADO |
-| `NODE_ENV=production` en deploy | `docs/deployment.md` | Railway dashboard | IMPLEMENTADO |
+| `NODE_ENV=production` en deploy | `docs/deployment.md` | Railway dashboard | VERIFICADO |
 
 ---
 
@@ -208,6 +211,8 @@
 | Lógica de juego backend | scripts de verificación (engine, actions, bombs, cores, arenaEvent) | OK |
 | API + lifecycle + `force-end` test-only | scripts HTTP | OK |
 | Tests E2E local/CI | `NODE_ENV=test node backend/dist/index.js & npm run test:e2e` | 9 passed, 2 ramas prod omitidas |
+| Verificación de producción | `GET /health`, SPA, `POST /api/game`, `GET /api/game/:id`, `POST .../action`, `force-end` | OK — `https://reactor-rush-production.up.railway.app` |
+| E2E producción (TASK-048) | `TEST_ENV=production PRODUCTION_URL=https://reactor-rush-production.up.railway.app npm run test:e2e` | **8 passed, 0 failed, 3 skipped** (ramas locales). T-04 prod PASS, T-06 prod PASS, T-03 UI PASS |
 | Tabla de uso de IA | `docs/investigacion.md` §4 | Sin filas `[EJEMPLO]` |
 
 > Nota sobre `constants.ts`: los únicos literales numéricos fuera de `constants.ts` son

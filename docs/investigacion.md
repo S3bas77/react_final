@@ -89,7 +89,8 @@ import { defineConfig } from '@playwright/test';
 const isProd = process.env.TEST_ENV === 'production';
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: './e2e',
+  workers: 1,
   use: {
     baseURL: isProd
       ? (process.env.PRODUCTION_URL ?? 'http://localhost:3000')
@@ -100,6 +101,10 @@ export default defineConfig({
   timeout: 30_000,
 });
 ```
+
+> `testDir` es relativo al directorio del archivo de configuración (`tests/`), por lo que
+> `'./e2e'` resuelve a `tests/e2e/`. `workers: 1` fuerza ejecución serial porque la
+> aplicación soporta una única partida activa.
 
 ### Tests locales vs producción
 
@@ -250,3 +255,4 @@ El siguiente registro documenta el uso de herramientas de IA durante el desarrol
 | 5 | "¿Por qué fallan T-02 y T-04 al ejecutar los tests?" | El agente detectó que Playwright ejecuta los archivos en paralelo con varios workers y que la aplicación soporta exactamente una partida activa (`docs/decisiones.md` §16): crear una partida cancela la anterior y corrompe el estado de otros tests. | `tests/playwright.config.ts` → `workers: 1`. | Se repitieron los tests: pasaron de 2 fallos a 9/9 en modo local/CI. | Se mantuvo la configuración documentada y solo se añadió `workers: 1` como requisito del diseño de partida única. |
 | 6 | "Si `TASKS.md` describe `testDir: './tests/e2e'` con el config dentro de `tests/`, ¿por qué Playwright no encuentra tests?" | Playwright resuelve `testDir` de forma relativa a la ubicación del archivo de configuración; `./tests/e2e` apuntaba a `tests/tests/e2e`. | `tests/playwright.config.ts` → `testDir: './e2e'`. | `npm run test:e2e` encontró y ejecutó los 6 archivos de test. | Corrección mínima de configuración, justificada por el comportamiento real de Playwright. |
 | 7 | "¿Cómo se gestionan los timers al reiniciar una partida para evitar fugas?" | El agente implementó `clearGameTimers(gameId)` en `store.ts`, que cancela el `interval` del loop y todos los `timeouts` registrados (bombas, respawn de núcleos, escudo y Reactor Pulse) antes de crear la nueva partida. | `backend/src/store.ts` y la limpieza previa en `createGame()` de `factory.ts`. | Se creó una partida, se esperó 5 s, se creó una segunda partida y se comprobó que la antigua devuelve 404 y la nueva mantiene su propio tiempo. | Ninguna. |
+| 8 | "T-06 en producción falla: primero crea una partida por API y luego la UI crea otra al pulsar 'Iniciar partida'." | El test documentado era incompatible con el modelo de partida única (`docs/decisiones.md` §16): el clic en la UI cancelaba el `gameId` que el test usaba por API, por lo que nunca se acumulaban puntos. | `tests/e2e/finish.spec.ts` (T-06 prod): se captura el `gameId` real del frontend con `page.waitForResponse` y el bucle juega sobre esa misma partida, sin crear una segunda. | Se verificó el flujo de victoria temprana por API pura contra producción (25 pts → `finished`, `player1_wins`) y después el test E2E corregido. | Snippet sincronizado en `docs/testing.md`. |

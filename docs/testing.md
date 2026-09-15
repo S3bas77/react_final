@@ -21,7 +21,8 @@ import { defineConfig } from '@playwright/test';
 const isProd = process.env.TEST_ENV === 'production';
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: './e2e',
+  workers: 1,
   use: {
     baseURL: isProd
       ? (process.env.PRODUCTION_URL ?? 'http://localhost:3000')
@@ -32,6 +33,16 @@ export default defineConfig({
   timeout: 30_000,
 });
 ```
+
+> **Nota sobre `testDir`:** `playwright.config.ts` vive en `tests/`, y Playwright resuelve
+> `testDir` de forma relativa al directorio del archivo de configuración. Por eso el valor
+> correcto es `'./e2e'` (que resuelve a `tests/e2e/`), y no `'./tests/e2e'` (que resolvería
+> a `tests/tests/e2e/`).
+>
+> **Nota sobre `workers: 1`:** la aplicación soporta exactamente **una partida activa** en
+> memoria (`docs/decisiones.md` §16). Si Playwright ejecutara los archivos en paralelo, cada
+> test que crea una partida cancelaría la partida de los demás tests. Por eso los tests se
+> ejecutan en serie con un único worker.
 
 ### Ejecución
 
@@ -45,7 +56,7 @@ NODE_ENV=test node backend/dist/index.js &
 npm run test:e2e:headed
 
 # Contra producción
-TEST_ENV=production PRODUCTION_URL=<PRODUCTION_URL> npm run test:e2e
+TEST_ENV=production PRODUCTION_URL=https://reactor-rush-production.up.railway.app npm run test:e2e
 ```
 
 ### data-testid requeridos en el frontend
@@ -463,21 +474,20 @@ test('T-06 (local): pantalla de resultado via polling', async ({ page, request }
 
   // Interceptar la respuesta de POST /api/game que hace el frontend al pulsar el botón,
   // para obtener el gameId que el frontend está usando en su polling.
-  let frontendGameId: string | null = null;
-
-  page.waitForResponse(
+  // IMPORTANTE: se registra la espera ANTES del clic y se hace `await` de la promesa,
+  // de lo contrario se produce una carrera al leer frontendGameId.
+  const responsePromise = page.waitForResponse(
     res => res.url().includes('/api/game') && res.request().method() === 'POST' && !res.url().includes('/action') && !res.url().includes('/force-end')
-  ).then(async res => {
-    const body = await res.json();
-    frontendGameId = body.gameId ?? null;
-  }).catch(() => { /* ignorar si la promesa no resuelve antes del timeout */ });
+  );
 
   await page.goto('/');
   await page.getByTestId('start-button').click();
   await expect(page.getByTestId('arena')).toBeVisible({ timeout: 3000 });
 
-  // Esperar a que frontendGameId esté disponible (la respuesta debe haber llegado ya)
-  expect(frontendGameId).not.toBeNull();
+  const response = await responsePromise;
+  const body = await response.json();
+  const frontendGameId: string = body.gameId;
+  expect(frontendGameId).toBeTruthy();
 
   // Forzar el fin de la partida que el frontend está observando
   const forceRes = await request.post(`/api/game/${frontendGameId}/test/force-end`);
@@ -498,14 +508,22 @@ test('T-06 (local): pantalla de resultado via polling', async ({ page, request }
 test('T-06 (prod): finalización por victoria anticipada', async ({ page, request }) => {
   if (process.env.TEST_ENV !== 'production') test.skip();
 
-  const res = await request.post('/api/game', { data: {} });
-  const { gameId, state: initial } = await res.json();
+  // Capturar el gameId real de la partida que el frontend crea al pulsar "Iniciar partida",
+  // para jugar sobre ESA misma partida y no crear una segunda (modelo de partida única).
+  const responsePromise = page.waitForResponse(
+    res => res.url().includes('/api/game') && res.request().method() === 'POST' && !res.url().includes('/action') && !res.url().includes('/force-end')
+  );
 
   await page.goto('/');
   await page.getByTestId('start-button').click();
   await expect(page.getByTestId('arena')).toBeVisible();
 
-  let current = initial;
+  const response = await responsePromise;
+  const body = await response.json();
+  const gameId: string = body.gameId;
+  expect(gameId).toBeTruthy();
+
+  let current = body.state;
   let attempts = 0;
   const MAX_ATTEMPTS = 100;
 

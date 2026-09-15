@@ -84,10 +84,10 @@ npm run test:e2e:headed
 ### Contra producción
 
 ```bash
-TEST_ENV=production PRODUCTION_URL=<PRODUCTION_URL> npm run test:e2e
+TEST_ENV=production PRODUCTION_URL=https://reactor-rush-production.up.railway.app npm run test:e2e
 ```
 
-Reemplazar `<PRODUCTION_URL>` con la URL pública del deployment activo.
+La URL pública del deployment activo es `https://reactor-rush-production.up.railway.app`.
 
 ## Variables de entorno
 
@@ -109,7 +109,7 @@ cp .env.example .env
 
 El proyecto se despliega en Railway. Ver [`docs/deployment.md`](docs/deployment.md) para instrucciones completas.
 
-URL pública: `<PRODUCTION_URL>`
+URL pública: `https://reactor-rush-production.up.railway.app`
 
 ## Documentación
 

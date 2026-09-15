@@ -81,6 +81,7 @@ reactor-rush/
 │       ├── App.tsx               # máquina de estados: start | game | result
 │       ├── App.css
 │       ├── types.ts              # mirror de backend/src/game/state.ts
+│       ├── vite-env.d.ts         # tipos de Vite (import.meta.env)
 │       ├── api/
 │       │   └── client.ts         # postGame(), getGame(), postAction() con fetch nativo
 │       ├── hooks/
@@ -102,6 +103,7 @@ reactor-rush/
 │           ├── ResourceSprite.tsx
 │           ├── PlayerSprite.tsx
 │           ├── PlayerSprite.css
+│           ├── Sprites.css        # estilos de bomba, núcleo y recursos
 │           ├── ResultScreen.tsx
 │           └── ResultScreen.css
 │

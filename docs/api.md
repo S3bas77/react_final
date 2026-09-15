@@ -9,7 +9,7 @@
 
 **Desarrollo:** `http://localhost:3000/api`
 
-**Producción:** `<PRODUCTION_URL>/api`
+**Producción:** `https://reactor-rush-production.up.railway.app/api`
 
 En desarrollo, Vite hace proxy de `/api` → `http://localhost:3000`. En producción, Express sirve directamente.
 

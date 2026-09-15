@@ -2173,7 +2173,8 @@ import { defineConfig } from '@playwright/test';
 const isProd = process.env.TEST_ENV === 'production';
 
 export default defineConfig({
-  testDir: './tests/e2e',
+  testDir: './e2e',
+  workers: 1,
   use: {
     baseURL: isProd
       ? (process.env.PRODUCTION_URL ?? 'http://localhost:3000')
@@ -2184,6 +2185,11 @@ export default defineConfig({
   timeout: 30_000,
 });
 ```
+
+> **Nota:** `playwright.config.ts` vive en `tests/`, y Playwright resuelve `testDir`
+> relativo al directorio del config, por lo que el valor correcto es `'./e2e'`.
+> `workers: 1` es obligatorio porque el juego soporta una sola partida activa
+> (`docs/decisiones.md` §16) y los tests no pueden correr en paralelo sin pisarse.
 
 **`tests/e2e/helpers/bfs.ts`:** Implementar `findPath(grid, from, to): Direction[] | null`.
 - BFS estándar sobre el grid. Celdas transitables: solo `'empty'`.

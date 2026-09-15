@@ -21,20 +21,18 @@ test('T-06 (local): finalización via force-end', async ({ page, request }) => {
 test('T-06 (local): pantalla de resultado via polling', async ({ page, request }) => {
   if (process.env.TEST_ENV === 'production') test.skip();
 
-  let frontendGameId: string | null = null;
-
-  page.waitForResponse(
+  const responsePromise = page.waitForResponse(
     res => res.url().includes('/api/game') && res.request().method() === 'POST' && !res.url().includes('/action') && !res.url().includes('/force-end')
-  ).then(async res => {
-    const body = await res.json();
-    frontendGameId = body.gameId ?? null;
-  }).catch(() => { /* ignorar si la promesa no resuelve antes del timeout */ });
+  );
 
   await page.goto('/');
   await page.getByTestId('start-button').click();
   await expect(page.getByTestId('arena')).toBeVisible({ timeout: 3000 });
 
-  expect(frontendGameId).not.toBeNull();
+  const response = await responsePromise;
+  const body = await response.json();
+  const frontendGameId: string = body.gameId;
+  expect(frontendGameId).toBeTruthy();
 
   const forceRes = await request.post(`/api/game/${frontendGameId}/test/force-end`);
   expect(forceRes.ok()).toBe(true);
@@ -49,14 +47,22 @@ test('T-06 (local): pantalla de resultado via polling', async ({ page, request }
 test('T-06 (prod): finalización por victoria anticipada', async ({ page, request }) => {
   if (process.env.TEST_ENV !== 'production') test.skip();
 
-  const res = await request.post('/api/game', { data: {} });
-  const { gameId, state: initial } = await res.json();
+  // Capturar el gameId real de la partida que el frontend crea al pulsar "Iniciar partida",
+  // para jugar sobre ESA misma partida y no crear una segunda (modelo de partida única).
+  const responsePromise = page.waitForResponse(
+    res => res.url().includes('/api/game') && res.request().method() === 'POST' && !res.url().includes('/action') && !res.url().includes('/force-end')
+  );
 
   await page.goto('/');
   await page.getByTestId('start-button').click();
   await expect(page.getByTestId('arena')).toBeVisible();
 
-  let current = initial;
+  const response = await responsePromise;
+  const body = await response.json();
+  const gameId: string = body.gameId;
+  expect(gameId).toBeTruthy();
+
+  let current = body.state;
   let attempts = 0;
   const MAX_ATTEMPTS = 100;
 

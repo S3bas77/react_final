@@ -7,8 +7,9 @@
 > componentes frontend referenciados en esta matriz existen e integran el build. Los
 > endpoints están implementados y devuelven los códigos documentados. Los tests T-01 a
 > T-06 están implementados y las ramas local/CI se ejecutan en verde (`npm run test:e2e`).
-> Las ramas de producción (T-04 y T-06 adaptativos) quedan a la espera del primer deploy
-> en Railway para su verificación contra `<PRODUCTION_URL>`.
+> Las ramas de producción (T-04 y T-06 adaptativos) se ejecutaron en TASK-048 contra el
+> deployment activo en `https://reactor-rush-production.up.railway.app`: 8 passed, 0 failed,
+> 3 skipped (ramas locales).
 
 ---
 

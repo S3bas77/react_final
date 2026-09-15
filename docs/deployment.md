@@ -2,7 +2,7 @@
 
 > Plataforma elegida: **Railway**
 > La URL pública definitiva se conocerá tras el primer deployment exitoso.
-> En este documento se usa `<PRODUCTION_URL>` como placeholder.
+> URL pública del deployment: `https://reactor-rush-production.up.railway.app`
 
 ---
 
@@ -11,9 +11,9 @@
 En producción, Express sirve tanto la API como el frontend compilado:
 
 ```
-<PRODUCTION_URL>/         → frontend/dist/index.html (SPA)
-<PRODUCTION_URL>/api/*    → rutas de la API REST
-<PRODUCTION_URL>/health   → { status: 'ok' }
+https://reactor-rush-production.up.railway.app/         → frontend/dist/index.html (SPA)
+https://reactor-rush-production.up.railway.app/api/*    → rutas de la API REST
+https://reactor-rush-production.up.railway.app/health   → { status: 'ok' }
 ```
 
 No hay servidor de frontend separado. No hay proxy inverso adicional. Un solo proceso Node.js, un solo puerto.
@@ -99,7 +99,7 @@ npm run build
 railway up
 ```
 
-Tras el deployment, Railway proporciona la URL pública. Actualizar `<PRODUCTION_URL>` en:
+Tras el deployment, Railway proporciona la URL pública. La URL se actualizó en:
 - `README.md`
 - `.env.example` (campo `PRODUCTION_URL`)
 - `docs/deployment.md` (este archivo)
@@ -152,16 +152,16 @@ jobs:
 
       # Verificación del health check en producción.
       # ACTIVAR este paso después del primer deploy exitoso:
-      # 1. Reemplazar <PRODUCTION_URL> por la URL real obtenida de Railway.
+      # 1. Verificar el health check usando la URL real de Railway.
       # 2. Cambiar `if: false` por `if: true` (o eliminar la condición).
       - name: Verify health check
         if: false   # <- desactivado hasta tener PRODUCTION_URL real
         run: |
           sleep 10
-          curl -f <PRODUCTION_URL>/health || exit 1
+          curl -f https://reactor-rush-production.up.railway.app/health || exit 1
 ```
 
-> Sustituir `<PRODUCTION_URL>` por la URL real tras el primer deployment.
+> URL real configurada tras el primer deployment.
 
 ---
 
@@ -171,21 +171,21 @@ Después de cada deployment, verificar:
 
 ```bash
 # Health check
-curl <PRODUCTION_URL>/health
+curl https://reactor-rush-production.up.railway.app/health
 # Respuesta esperada: {"status":"ok"}
 
 # Frontend
-curl -s <PRODUCTION_URL> | grep "Reactor Rush"
+curl -s https://reactor-rush-production.up.railway.app | grep "Reactor Rush"
 # Debe devolver el HTML con el título del juego
 
 # API
-curl -s -X POST <PRODUCTION_URL>/api/game \
+curl -s -X POST https://reactor-rush-production.up.railway.app/api/game \
   -H "Content-Type: application/json" \
   -d '{}' | jq .gameId
 # Debe devolver un UUID válido
 
 # Verificar que force-end NO existe en producción
-curl -s -X POST <PRODUCTION_URL>/api/game/test-id/test/force-end \
+curl -s -X POST https://reactor-rush-production.up.railway.app/api/game/test-id/test/force-end \
   | grep -v '"status":"finished"'
 # No debe devolver un estado finished en JSON
 ```
@@ -198,7 +198,7 @@ Una vez verificado el deployment:
 
 ```bash
 TEST_ENV=production \
-PRODUCTION_URL=<PRODUCTION_URL> \
+PRODUCTION_URL=https://reactor-rush-production.up.railway.app \
 npm run test:e2e
 ```
 
@@ -206,7 +206,7 @@ Para T-06 en producción (acumulación real de puntos), aumentar el timeout:
 
 ```bash
 TEST_ENV=production \
-PRODUCTION_URL=<PRODUCTION_URL> \
+PRODUCTION_URL=https://reactor-rush-production.up.railway.app \
 npm run test:e2e -- --timeout 120000
 ```
 
