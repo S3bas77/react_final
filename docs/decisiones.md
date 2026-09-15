@@ -159,7 +159,7 @@ CHAIN_REACTION_MAX_DEPTH, POLLING_INTERVAL_MS
 **Justificación:**
 - Los tests E2E necesitan escenarios deterministas (T-04: núcleo en posición conocida) y finalización acelerada (T-06: sin esperar 120 s).
 - Exponer estos mecanismos en producción permitiría que cualquier usuario termine partidas o controle el estado inicial, rompiendo la integridad del juego.
-- La implementación usa `if (process.env.NODE_ENV === 'test')` en `index.ts` antes de importar `routes/test.ts`, garantizando que el módulo no se carga en producción.
+- La implementación importa `routes/test.ts` estáticamente en `index.ts`, pero registra la ruta `app.use('/api/game', testRouter)` únicamente dentro del bloque `if (process.env.NODE_ENV === 'test')`. En producción el módulo está en memoria pero el endpoint no está registrado en Express y por tanto es inaccesible desde cualquier URL.
 
 ---
 
