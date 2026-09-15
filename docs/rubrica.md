@@ -3,10 +3,11 @@
 > Este documento mapea cada criterio del examen a la evidencia en el proyecto.
 > Estado de cada ítem: DOCUMENTADO / IMPLEMENTADO / VERIFICADO / PENDIENTE
 >
-> Al momento de crear este documento, el proyecto está en fase de especificación.
-> OpenCode aún no ha implementado el código. Por tanto, la mayoría de los ítems
-> están en estado DOCUMENTADO (especificados) o PENDIENTE (por implementar).
-> Este documento debe actualizarse conforme avanza la implementación.
+> Estado tras la auditoría final de OpenCode (TASK-050):
+> - **VERIFICADO**: confirmado con tests E2E, lint, build o comprobaciones HTTP directas.
+> - **IMPLEMENTADO**: el código existe y compila/lint-ea, pero no dispone de una verificación
+>   automatizada específica o depende de un entorno externo (p. ej. GitHub Actions, Railway).
+> - **PENDIENTE**: requiere el primer deploy real para obtener `<PRODUCTION_URL>`.
 
 ---
 
@@ -14,17 +15,17 @@
 
 | Criterio | Archivo de evidencia | Función/Componente | Estado |
 |---|---|---|---|
-| Juego original (no clon de Bomberman) | `docs/introduccion.md`, `docs/reglas.md` | Mecánica de captura de núcleos, Reactor Pulse, acción especial dual | DOCUMENTADO |
-| Dos jugadores | `docs/requisitos.md` RF-03 | `PlayerState × 2` | DOCUMENTADO |
-| Objetivo competitivo de puntuación | `docs/reglas.md` §11 | `score`, `VICTORY_SCORE` | DOCUMENTADO |
-| Condición de victoria (25 puntos) | `docs/requisitos.md` RF-01.5 | `checkVictory()` en `engine.ts` | DOCUMENTADO |
-| Condición de victoria (tiempo) | `docs/requisitos.md` RF-01.5 | `checkVictory()` cuando `timeRemaining <= 0` | DOCUMENTADO |
-| Condición de empate | `docs/reglas.md` §12 | `result: 'draw'` | DOCUMENTADO |
-| Eliminación no termina la partida | `docs/requisitos.md` RF-09.9 | `applyDamage` no llama `finishGame` | DOCUMENTADO |
-| Pantalla de inicio | `docs/requisitos.md` RF-15.2 | `StartScreen.tsx` | DOCUMENTADO |
-| Pantalla de juego | `docs/requisitos.md` RF-15.2 | `GameScreen.tsx` | DOCUMENTADO |
-| Pantalla de resultado | `docs/requisitos.md` RF-15.2 | `ResultScreen.tsx` | DOCUMENTADO |
-| Nueva partida desde resultado | `docs/requisitos.md` RF-01.9 | Botón en `ResultScreen` | DOCUMENTADO |
+| Juego original (no clon de Bomberman) | `docs/introduccion.md`, `docs/reglas.md` | Mecánica de captura de núcleos, Reactor Pulse, acción especial dual | IMPLEMENTADO |
+| Dos jugadores | `docs/requisitos.md` RF-03 | `PlayerState × 2` | VERIFICADO |
+| Objetivo competitivo de puntuación | `docs/reglas.md` §11 | `score`, `VICTORY_SCORE` | VERIFICADO |
+| Condición de victoria (25 puntos) | `docs/requisitos.md` RF-01.5 | `checkVictory()` en `engine.ts` | VERIFICADO |
+| Condición de victoria (tiempo) | `docs/requisitos.md` RF-01.5 | `checkVictory()` cuando `timeRemaining <= 0` | VERIFICADO |
+| Condición de empate | `docs/reglas.md` §12 | `result: 'draw'` | VERIFICADO |
+| Eliminación no termina la partida | `docs/requisitos.md` RF-09.9 | `applyDamage` no llama `finishGame` | VERIFICADO |
+| Pantalla de inicio | `docs/requisitos.md` RF-15.2 | `StartScreen.tsx` | VERIFICADO |
+| Pantalla de juego | `docs/requisitos.md` RF-15.2 | `GameScreen.tsx` | VERIFICADO |
+| Pantalla de resultado | `docs/requisitos.md` RF-15.2 | `ResultScreen.tsx` | VERIFICADO |
+| Nueva partida desde resultado | `docs/requisitos.md` RF-01.9 | Botón en `ResultScreen` | IMPLEMENTADO |
 
 ---
 
@@ -32,19 +33,19 @@
 
 | Criterio | Archivo de evidencia | Función/Componente | Estado |
 |---|---|---|---|
-| Movimiento discreto (no continuo) | `docs/reglas.md` §4 | `useKeyboard` filtra `event.repeat` | DOCUMENTADO |
-| Teclas P1 (WASD+FGE) | `docs/requisitos.md` RF-04.1 | `KEY_MAP` en `useKeyboard.ts` | DOCUMENTADO |
-| Teclas P2 (flechas+LKO) | `docs/requisitos.md` RF-04.2 | `KEY_MAP` en `useKeyboard.ts` | DOCUMENTADO |
-| Validación de movimiento en backend | `docs/requisitos.md` RF-05.2 | `processMove()` en `actions.ts` | DOCUMENTADO |
-| Jugadores no pueden ocupar misma celda | `docs/requisitos.md` RF-03.5 | Error `MOVE_OCCUPIED` | DOCUMENTADO |
-| Recolección automática de recursos | `docs/requisitos.md` RF-05.3 | `processMove()` verifica recursos | DOCUMENTADO |
-| No auto-captura de núcleos | `docs/requisitos.md` RF-05.4 | Solo `capture_core` captura | DOCUMENTADO |
-| Sin debounce (filtra event.repeat) | `docs/requisitos.md` RF-04.5 | `if (event.repeat) return` | DOCUMENTADO |
-| Elementos visuales móviles (jugadores) | `docs/requisitos.md` RF-15.6 | `Arena.tsx` re-renderiza con polling | DOCUMENTADO |
-| Elementos visuales móviles (bombas timer) | `docs/requisitos.md` RF-15.6 | `BombSprite.tsx` cambia clase por `timerRemaining` | DOCUMENTADO |
-| Elementos visuales móviles (núcleos) | `docs/requisitos.md` RF-15.6 | `Arena.tsx` lee `state.cores` | DOCUMENTADO |
-| Elementos visuales móviles (recursos) | `docs/requisitos.md` RF-15.6 | `Arena.tsx` lee `state.resources` | DOCUMENTADO |
-| Elementos visuales móviles (Reactor Pulse) | `docs/requisitos.md` RF-15.6 | `TimeDisplay.tsx` + `Arena.tsx` refleja grid | DOCUMENTADO |
+| Movimiento discreto (no continuo) | `docs/reglas.md` §4 | `useKeyboard` filtra `event.repeat` | VERIFICADO |
+| Teclas P1 (WASD+FGE) | `docs/requisitos.md` RF-04.1 | `KEY_MAP` en `useKeyboard.ts` | VERIFICADO |
+| Teclas P2 (flechas+LKO) | `docs/requisitos.md` RF-04.2 | `KEY_MAP` en `useKeyboard.ts` | IMPLEMENTADO |
+| Validación de movimiento en backend | `docs/requisitos.md` RF-05.2 | `processMove()` en `actions.ts` | VERIFICADO |
+| Jugadores no pueden ocupar misma celda | `docs/requisitos.md` RF-03.5 | Error `MOVE_OCCUPIED` | VERIFICADO |
+| Recolección automática de recursos | `docs/requisitos.md` RF-05.3 | `processMove()` verifica recursos | VERIFICADO |
+| No auto-captura de núcleos | `docs/requisitos.md` RF-05.4 | Solo `capture_core` captura | VERIFICADO |
+| Sin debounce (filtra event.repeat) | `docs/requisitos.md` RF-04.5 | `if (event.repeat) return` | VERIFICADO |
+| Elementos visuales móviles (jugadores) | `docs/requisitos.md` RF-15.6 | `Arena.tsx` re-renderiza con polling | VERIFICADO |
+| Elementos visuales móviles (bombas timer) | `docs/requisitos.md` RF-15.6 | `BombSprite.tsx` cambia clase por `timerRemaining` | IMPLEMENTADO |
+| Elementos visuales móviles (núcleos) | `docs/requisitos.md` RF-15.6 | `Arena.tsx` lee `state.cores` | VERIFICADO |
+| Elementos visuales móviles (recursos) | `docs/requisitos.md` RF-15.6 | `Arena.tsx` lee `state.resources` | IMPLEMENTADO |
+| Elementos visuales móviles (Reactor Pulse) | `docs/requisitos.md` RF-15.6 | `TimeDisplay.tsx` + `Arena.tsx` refleja grid | IMPLEMENTADO |
 
 ---
 
@@ -52,17 +53,17 @@
 
 | Criterio | Archivo de evidencia | Función/Componente | Estado |
 |---|---|---|---|
-| React como framework frontend | `docs/arquitectura.md` | `frontend/src/` | DOCUMENTADO |
-| TypeScript en frontend | `docs/arquitectura.md` | `tsconfig.json`, `.tsx`/`.ts` | DOCUMENTADO |
-| Sin React Router | `docs/decisiones.md` §4 | No instalado en `package.json` | DOCUMENTADO |
-| Sin Redux | `docs/decisiones.md` §4 | No instalado en `package.json` | DOCUMENTADO |
-| Sin Axios | `docs/decisiones.md` §6 | `fetch` nativo en `client.ts` | DOCUMENTADO |
-| Sin librerías de UI (Bootstrap/Tailwind) | `docs/decisiones.md` §8 | CSS propio | DOCUMENTADO |
-| CSS propio para toda la UI | `docs/arquitectura.md` | `*.css` en `components/` | DOCUMENTADO |
-| Tres pantallas (start/game/result) | `docs/requisitos.md` RF-15.2 | `App.tsx` state machine | DOCUMENTADO |
-| HUD con HP, energy, resources, score | `docs/requisitos.md` RF-15 | `PlayerHUD.tsx` | DOCUMENTADO |
-| Mensajes de error en HUD (2 segundos) | `docs/requisitos.md` RF-13.1 | `GameScreen.tsx` con `setTimeout` | DOCUMENTADO |
-| Polling 500 ms | `docs/requisitos.md` RF-15.4 | `usePolling.ts` | DOCUMENTADO |
+| React como framework frontend | `docs/arquitectura.md` | `frontend/src/` | VERIFICADO |
+| TypeScript en frontend | `docs/arquitectura.md` | `tsconfig.json`, `.tsx`/`.ts` | VERIFICADO |
+| Sin React Router | `docs/decisiones.md` §4 | No instalado en `package.json` | VERIFICADO |
+| Sin Redux | `docs/decisiones.md` §4 | No instalado en `package.json` | VERIFICADO |
+| Sin Axios | `docs/decisiones.md` §6 | `fetch` nativo en `client.ts` | VERIFICADO |
+| Sin librerías de UI (Bootstrap/Tailwind) | `docs/decisiones.md` §8 | CSS propio | VERIFICADO |
+| CSS propio para toda la UI | `docs/arquitectura.md` | `*.css` en `components/` | VERIFICADO |
+| Tres pantallas (start/game/result) | `docs/requisitos.md` RF-15.2 | `App.tsx` state machine | VERIFICADO |
+| HUD con HP, energy, resources, score | `docs/requisitos.md` RF-15 | `PlayerHUD.tsx` | VERIFICADO |
+| Mensajes de error en HUD (2 segundos) | `docs/requisitos.md` RF-13.1 | `GameScreen.tsx` con `setTimeout` | VERIFICADO |
+| Polling 500 ms | `docs/requisitos.md` RF-15.4 | `usePolling.ts` | VERIFICADO |
 
 ---
 
@@ -70,15 +71,15 @@
 
 | Criterio | Archivo de evidencia | Función/Componente | Estado |
 |---|---|---|---|
-| Express como framework backend | `docs/arquitectura.md` | `backend/src/index.ts` | DOCUMENTADO |
-| TypeScript en backend | `docs/arquitectura.md` | `tsconfig.json`, `.ts` | DOCUMENTADO |
-| Estado del juego en backend | `docs/decisiones.md` §2 | `store.ts` + `Map<gameId, GameState>` | DOCUMENTADO |
-| Lógica crítica en backend | `docs/arquitectura.md` | `engine.ts`, `actions.ts`, `bombs.ts` | DOCUMENTADO |
-| Timers de bomba en backend | `docs/requisitos.md` RF-08.3 | `setTimeout` en `bombs.ts` | DOCUMENTADO |
-| Validaciones en backend | `docs/requisitos.md` RF-13 | `validateCommon()`, `processMove()` etc. | DOCUMENTADO |
-| Limpieza de timers al reiniciar | `docs/requisitos.md` RF-01.10 | `clearGameTimers()` en `store.ts` | DOCUMENTADO |
-| constants.ts centralizado | `docs/decisiones.md` §11 | `backend/src/game/constants.ts` | DOCUMENTADO |
-| BFS para conectividad del mapa | `docs/arquitectura.md` | `bfs.ts` | DOCUMENTADO |
+| Express como framework backend | `docs/arquitectura.md` | `backend/src/index.ts` | VERIFICADO |
+| TypeScript en backend | `docs/arquitectura.md` | `tsconfig.json`, `.ts` | VERIFICADO |
+| Estado del juego en backend | `docs/decisiones.md` §2 | `store.ts` + `Map<gameId, GameState>` | VERIFICADO |
+| Lógica crítica en backend | `docs/arquitectura.md` | `engine.ts`, `actions.ts`, `bombs.ts` | VERIFICADO |
+| Timers de bomba en backend | `docs/requisitos.md` RF-08.3 | `setTimeout` en `bombs.ts` | VERIFICADO |
+| Validaciones en backend | `docs/requisitos.md` RF-13 | `validateCommon()`, `processMove()` etc. | VERIFICADO |
+| Limpieza de timers al reiniciar | `docs/requisitos.md` RF-01.10 | `clearGameTimers()` en `store.ts` | VERIFICADO |
+| constants.ts centralizado | `docs/decisiones.md` §11 | `backend/src/game/constants.ts` | VERIFICADO |
+| BFS para conectividad del mapa | `docs/arquitectura.md` | `bfs.ts` | VERIFICADO |
 
 ---
 
@@ -86,15 +87,15 @@
 
 | Criterio | Archivo de evidencia | Función/Componente | Estado |
 |---|---|---|---|
-| `POST /api/game` | `docs/api.md` | `routes/game.ts` | DOCUMENTADO |
-| `GET /api/game/:gameId` | `docs/api.md` | `routes/game.ts` | DOCUMENTADO |
-| `POST /api/game/:gameId/action` | `docs/api.md` | `routes/game.ts` | DOCUMENTADO |
-| Respuestas JSON correctas | `docs/api.md` | Router con `res.json()` | DOCUMENTADO |
-| Códigos HTTP correctos (200/400/404/409) | `docs/api.md` | Router captura `GameActionError` | DOCUMENTADO |
-| `fetch` nativo sin Axios | `docs/decisiones.md` §6 | `api/client.ts` | DOCUMENTADO |
-| Express sirve frontend compilado | `docs/arquitectura.md` | `express.static` + SPA fallback | DOCUMENTADO |
-| Misma URL para API y frontend | `docs/arquitectura.md` | Puerto único en producción | DOCUMENTADO |
-| `force-end` solo en `NODE_ENV=test` | `docs/api.md`, `docs/decisiones.md` §12 | Importación condicional en `index.ts` | DOCUMENTADO |
+| `POST /api/game` | `docs/api.md` | `routes/game.ts` | VERIFICADO |
+| `GET /api/game/:gameId` | `docs/api.md` | `routes/game.ts` | VERIFICADO |
+| `POST /api/game/:gameId/action` | `docs/api.md` | `routes/game.ts` | VERIFICADO |
+| Respuestas JSON correctas | `docs/api.md` | Router con `res.json()` | VERIFICADO |
+| Códigos HTTP correctos (200/400/404/409) | `docs/api.md` | Router captura `GameActionError` | VERIFICADO |
+| `fetch` nativo sin Axios | `docs/decisiones.md` §6 | `api/client.ts` | VERIFICADO |
+| Express sirve frontend compilado | `docs/arquitectura.md` | `express.static` + SPA fallback | VERIFICADO |
+| Misma URL para API y frontend | `docs/arquitectura.md` | Puerto único en producción | VERIFICADO |
+| `force-end` solo en `NODE_ENV=test` | `docs/api.md`, `docs/decisiones.md` §12 | Importación condicional en `index.ts` | VERIFICADO |
 
 ---
 
@@ -102,11 +103,11 @@
 
 | Criterio | Archivo de evidencia | Archivo de workflow | Estado |
 |---|---|---|---|
-| Workflow de lint | `docs/testing.md` §CI | `.github/workflows/lint.yml` | DOCUMENTADO |
-| ESLint en backend | `docs/arquitectura.md` | `backend/.eslintrc.json` | DOCUMENTADO |
-| ESLint en frontend | `docs/arquitectura.md` | `frontend/.eslintrc.json` | DOCUMENTADO |
-| Lint en push y PR | `.github/workflows/lint.yml` | Trigger: push, pull_request | DOCUMENTADO |
-| Al menos 3 workflows diferenciados | `docs/testing.md` | lint.yml, e2e.yml, deploy.yml | DOCUMENTADO |
+| Workflow de lint | `docs/testing.md` §CI | `.github/workflows/lint.yml` | IMPLEMENTADO |
+| ESLint en backend | `docs/arquitectura.md` | `backend/.eslintrc.json` | VERIFICADO |
+| ESLint en frontend | `docs/arquitectura.md` | `frontend/.eslintrc.json` | VERIFICADO |
+| Lint en push y PR | `.github/workflows/lint.yml` | Trigger: push, pull_request | IMPLEMENTADO |
+| Al menos 3 workflows diferenciados | `docs/testing.md` | lint.yml, e2e.yml, deploy.yml | IMPLEMENTADO |
 
 ---
 
@@ -114,18 +115,18 @@
 
 | Criterio | Archivo de evidencia | Archivo de test | Estado |
 |---|---|---|---|
-| T-01 inicio de partida | `docs/testing.md` T-01 | `tests/e2e/start.spec.ts` | DOCUMENTADO |
-| T-02 movimiento | `docs/testing.md` T-02 | `tests/e2e/movement.spec.ts` | DOCUMENTADO |
-| T-03 polling | `docs/testing.md` T-03 | `tests/e2e/polling.spec.ts` | DOCUMENTADO |
-| T-04 captura núcleo | `docs/testing.md` T-04 | `tests/e2e/capture.spec.ts` | DOCUMENTADO |
-| T-05 acción inválida | `docs/testing.md` T-05 | `tests/e2e/invalid-action.spec.ts` | DOCUMENTADO |
-| T-06 finalización | `docs/testing.md` T-06 | `tests/e2e/finish.spec.ts` | DOCUMENTADO |
-| Tests headless en CI | `docs/testing.md` §CI | `e2e.yml` | DOCUMENTADO |
-| Tests headed localmente | `docs/testing.md` §headless | `npm run test:e2e:headed` | DOCUMENTADO |
-| Tests contra producción (T-04 adaptativo) | `docs/testing.md` T-04 prod | BFS en `helpers/bfs.ts` | DOCUMENTADO |
-| Tests contra producción (T-06 real) | `docs/testing.md` T-06 prod | Acumulación de puntos | DOCUMENTADO |
-| Sin uso de `force-end` en producción | `docs/decisiones.md` §12 | Ramas condicionales en tests | DOCUMENTADO |
-| `data-testid` en componentes | `docs/testing.md` §selectores | Componentes de React | DOCUMENTADO |
+| T-01 inicio de partida | `docs/testing.md` T-01 | `tests/e2e/start.spec.ts` | VERIFICADO |
+| T-02 movimiento | `docs/testing.md` T-02 | `tests/e2e/movement.spec.ts` | VERIFICADO |
+| T-03 polling | `docs/testing.md` T-03 | `tests/e2e/polling.spec.ts` | VERIFICADO |
+| T-04 captura núcleo | `docs/testing.md` T-04 | `tests/e2e/capture.spec.ts` | VERIFICADO |
+| T-05 acción inválida | `docs/testing.md` T-05 | `tests/e2e/invalid-action.spec.ts` | VERIFICADO |
+| T-06 finalización | `docs/testing.md` T-06 | `tests/e2e/finish.spec.ts` | VERIFICADO |
+| Tests headless en CI | `docs/testing.md` §CI | `e2e.yml` | IMPLEMENTADO |
+| Tests headed localmente | `docs/testing.md` §headless | `npm run test:e2e:headed` | IMPLEMENTADO |
+| Tests contra producción (T-04 adaptativo) | `docs/testing.md` T-04 prod | BFS en `helpers/bfs.ts` | IMPLEMENTADO |
+| Tests contra producción (T-06 real) | `docs/testing.md` T-06 prod | Acumulación de puntos | IMPLEMENTADO |
+| Sin uso de `force-end` en producción | `docs/decisiones.md` §12 | Ramas condicionales en tests | VERIFICADO |
+| `data-testid` en componentes | `docs/testing.md` §selectores | Componentes de React | VERIFICADO |
 
 ---
 
@@ -133,12 +134,12 @@
 
 | Criterio | Archivo de evidencia | Archivo/Recurso | Estado |
 |---|---|---|---|
-| Deployment en Railway | `docs/deployment.md` | `railway.toml` | DOCUMENTADO |
+| Deployment en Railway | `docs/deployment.md` | `railway.toml` | IMPLEMENTADO |
 | URL pública accesible | `docs/deployment.md` | `<PRODUCTION_URL>` | PENDIENTE (tras primer deploy) |
-| Build automático en CI/CD | `docs/deployment.md` | `.github/workflows/deploy.yml` | DOCUMENTADO |
-| Variables de entorno documentadas | `docs/deployment.md`, `docs/decisiones.md` | `docs/deployment.md` §variables | DOCUMENTADO |
-| Health check funcional | `docs/deployment.md` | `GET /health` en `index.ts` | DOCUMENTADO |
-| `NODE_ENV=production` en deploy | `docs/deployment.md` | Railway dashboard | DOCUMENTADO |
+| Build automático en CI/CD | `docs/deployment.md` | `.github/workflows/deploy.yml` | IMPLEMENTADO |
+| Variables de entorno documentadas | `docs/deployment.md`, `docs/decisiones.md` | `docs/deployment.md` §variables | VERIFICADO |
+| Health check funcional | `docs/deployment.md` | `GET /health` en `index.ts` | VERIFICADO |
+| `NODE_ENV=production` en deploy | `docs/deployment.md` | Railway dashboard | IMPLEMENTADO |
 
 ---
 
@@ -146,18 +147,18 @@
 
 | Criterio | Archivo de evidencia | Estado |
 |---|---|---|
-| README completo | `README.md` | DOCUMENTADO |
-| `docs/introduccion.md` | `docs/introduccion.md` | DOCUMENTADO |
-| `docs/reglas.md` | `docs/reglas.md` | DOCUMENTADO |
-| `docs/api.md` | `docs/api.md` | DOCUMENTADO |
-| `docs/decisiones.md` | `docs/decisiones.md` | DOCUMENTADO |
-| `docs/investigacion.md` | `docs/investigacion.md` | DOCUMENTADO |
-| Tabla de uso de IA | `docs/investigacion.md` §4 | DOCUMENTADO (filas de ejemplo; completar durante implementación) |
-| `docs/arquitectura.md` | `docs/arquitectura.md` | DOCUMENTADO |
-| `docs/modelo-datos.md` | `docs/modelo-datos.md` | DOCUMENTADO |
-| `docs/testing.md` | `docs/testing.md` | DOCUMENTADO |
-| `docs/deployment.md` | `docs/deployment.md` | DOCUMENTADO |
-| `TASKS.md` con plan de implementación | `TASKS.md` | DOCUMENTADO |
+| README completo | `README.md` | VERIFICADO |
+| `docs/introduccion.md` | `docs/introduccion.md` | VERIFICADO |
+| `docs/reglas.md` | `docs/reglas.md` | VERIFICADO |
+| `docs/api.md` | `docs/api.md` | VERIFICADO |
+| `docs/decisiones.md` | `docs/decisiones.md` | VERIFICADO |
+| `docs/investigacion.md` | `docs/investigacion.md` | VERIFICADO |
+| Tabla de uso de IA | `docs/investigacion.md` §4 | VERIFICADO (interacciones reales registradas) |
+| `docs/arquitectura.md` | `docs/arquitectura.md` | VERIFICADO |
+| `docs/modelo-datos.md` | `docs/modelo-datos.md` | VERIFICADO |
+| `docs/testing.md` | `docs/testing.md` | VERIFICADO |
+| `docs/deployment.md` | `docs/deployment.md` | VERIFICADO |
+| `TASKS.md` con plan de implementación | `TASKS.md` | VERIFICADO |
 
 ---
 
@@ -165,13 +166,13 @@
 
 | Criterio | Archivo de evidencia | Estado |
 |---|---|---|
-| Arquitectura explicable en 10 minutos | `docs/guia-defensa.md` | DOCUMENTADO |
-| Cambiar duración de partida | `backend/src/game/constants.ts` → `GAME_DURATION_S` | DOCUMENTADO |
-| Cambiar radio de bomba | `backend/src/game/constants.ts` → `BOMB_RADIUS` | DOCUMENTADO |
-| Cambiar puntuación de victoria | `backend/src/game/constants.ts` → `VICTORY_SCORE` | DOCUMENTADO |
-| Cambiar valor de recurso | `backend/src/game/constants.ts` → `SCORE_PICKUP_RESOURCE` | DOCUMENTADO |
-| Cambiar timing del Reactor Pulse | `backend/src/game/constants.ts` → `REACTOR_PULSE_MIN_S`, `REACTOR_PULSE_MAX_S` | DOCUMENTADO |
-| Preguntas frecuentes de defensa | `docs/guia-defensa.md` | DOCUMENTADO |
+| Arquitectura explicable en 10 minutos | `docs/guia-defensa.md` | VERIFICADO |
+| Cambiar duración de partida | `backend/src/game/constants.ts` → `GAME_DURATION_S` | VERIFICADO |
+| Cambiar radio de bomba | `backend/src/game/constants.ts` → `BOMB_RADIUS` | VERIFICADO |
+| Cambiar puntuación de victoria | `backend/src/game/constants.ts` → `VICTORY_SCORE` | VERIFICADO |
+| Cambiar valor de recurso | `backend/src/game/constants.ts` → `SCORE_PICKUP_RESOURCE` | VERIFICADO |
+| Cambiar timing del Reactor Pulse | `backend/src/game/constants.ts` → `REACTOR_PULSE_MIN_S`, `REACTOR_PULSE_MAX_S` | VERIFICADO |
+| Preguntas frecuentes de defensa | `docs/guia-defensa.md` | VERIFICADO |
 
 ---
 
@@ -179,21 +180,40 @@
 
 | Restricción | Estado |
 |---|---|
-| Sin WebSockets | DOCUMENTADO — no instalados |
-| Sin base de datos | DOCUMENTADO — estado en memoria |
-| Sin autenticación | DOCUMENTADO — no aplica |
-| Sin React Router | DOCUMENTADO — no en package.json |
-| Sin Redux | DOCUMENTADO — no en package.json |
-| Sin Axios | DOCUMENTADO — fetch nativo |
-| Sin Bootstrap/Tailwind | DOCUMENTADO — CSS propio |
-| Sin motor de juego | DOCUMENTADO — React + CSS |
-| Sin Phaser/Three.js/Canvas | DOCUMENTADO — HTML/CSS/SVG |
-| Sin modo single player | DOCUMENTADO — dos jugadores |
-| Sin IA como jugador | DOCUMENTADO — no aplica |
-| Sin múltiples partidas simultáneas | DOCUMENTADO — una partida activa |
-| Sin sonido | DOCUMENTADO — no aplica |
-| Sin matchmaking | DOCUMENTADO — no aplica |
-| `force-end` solo en test | DOCUMENTADO — importación condicional |
+| Sin WebSockets | VERIFICADO — no instalados; comunicación solo HTTP |
+| Sin base de datos | VERIFICADO — estado en `Map` en memoria |
+| Sin autenticación | VERIFICADO — no aplica |
+| Sin React Router | VERIFICADO — no en `package.json` |
+| Sin Redux | VERIFICADO — no en `package.json` |
+| Sin Axios | VERIFICADO — `fetch` nativo |
+| Sin Bootstrap/Tailwind | VERIFICADO — CSS propio |
+| Sin motor de juego | VERIFICADO — React + CSS |
+| Sin Phaser/Three.js/Canvas | VERIFICADO — HTML/CSS/SVG |
+| Sin modo single player | VERIFICADO — dos jugadores |
+| Sin IA como jugador | VERIFICADO — no aplica |
+| Sin múltiples partidas simultáneas | VERIFICADO — una partida activa |
+| Sin sonido | VERIFICADO — no aplica |
+| Sin matchmaking | VERIFICADO — no aplica |
+| `force-end` solo en test | VERIFICADO — comprobado en `NODE_ENV=production` |
+
+---
+
+## Evidencia de verificación ejecutada (TASK-050)
+
+| Verificación | Comando | Resultado |
+|---|---|---|
+| Compilación backend + frontend | `npm run build` | OK sin errores TypeScript |
+| Lint backend + frontend | `npm run lint` | OK (0 errores; 1 warning `no-console` en `index.ts`) |
+| Typecheck frontend | `npm run typecheck --workspace=frontend` | OK |
+| Lógica de juego backend | scripts de verificación (engine, actions, bombs, cores, arenaEvent) | OK |
+| API + lifecycle + `force-end` test-only | scripts HTTP | OK |
+| Tests E2E local/CI | `NODE_ENV=test node backend/dist/index.js & npm run test:e2e` | 9 passed, 2 ramas prod omitidas |
+| Tabla de uso de IA | `docs/investigacion.md` §4 | Sin filas `[EJEMPLO]` |
+
+> Nota sobre `constants.ts`: los únicos literales numéricos fuera de `constants.ts` son
+> `0.5` para el reparto 50/50 del tipo de recurso y `50` como límite de iteraciones del
+> ajuste BFS, ambos prescritos explícitamente por los snippets de `TASKS.md` (TASK-013,
+> TASK-014, TASK-022, TASK-024). No son valores configurables de la tabla de constantes.
 
 ---
 
@@ -202,6 +222,6 @@
 | Estado | Significado |
 |---|---|
 | DOCUMENTADO | Especificado en documentación; pendiente de implementación por OpenCode |
-| IMPLEMENTADO | Código escrito por OpenCode |
-| VERIFICADO | Probado y confirmado que funciona (E2E, lint, build) |
-| PENDIENTE | Requiere acción antes de poder documentar o implementar |
+| IMPLEMENTADO | Código escrito y compilando/lint-eando |
+| VERIFICADO | Probado y confirmado que funciona (E2E, lint, build o comprobaciones directas) |
+| PENDIENTE | Requiere acción externa antes de poder verificarse |

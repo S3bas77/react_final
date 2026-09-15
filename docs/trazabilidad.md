@@ -2,6 +2,13 @@
 
 > Cada requisito aprobado está mapeado a: regla → módulo backend → componente frontend → endpoint → test → documentación.
 > Permite verificar que ningún requisito quedó sin representación en el proyecto.
+>
+> Estado tras la auditoría final de OpenCode (TASK-050): todos los módulos backend y
+> componentes frontend referenciados en esta matriz existen e integran el build. Los
+> endpoints están implementados y devuelven los códigos documentados. Los tests T-01 a
+> T-06 están implementados y las ramas local/CI se ejecutan en verde (`npm run test:e2e`).
+> Las ramas de producción (T-04 y T-06 adaptativos) quedan a la espera del primer deploy
+> en Railway para su verificación contra `<PRODUCTION_URL>`.
 
 ---
 

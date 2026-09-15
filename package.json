@@ -1,0 +1,16 @@
+{
+  "name": "reactor-rush",
+  "private": true,
+  "workspaces": ["backend", "frontend"],
+  "scripts": {
+    "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
+    "start": "node backend/dist/index.js",
+    "lint": "npm run lint --workspace=backend && npm run lint --workspace=frontend",
+    "test:e2e": "playwright test --config=tests/playwright.config.ts",
+    "test:e2e:headed": "playwright test --config=tests/playwright.config.ts --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.41.0",
+    "wait-on": "^7.2.0"
+  }
+}

@@ -1,0 +1,12 @@
+.player {
+  width: 80%; height: 80%;
+  margin: 10%;
+  border-radius: 50%;
+  position: absolute;
+  top: 0; left: 0;
+}
+.player--player1 { background: #3b82f6; }
+.player--player2 { background: #f97316; }
+.player--shielded { box-shadow: 0 0 8px 4px #fff; animation: shield-pulse 0.5s infinite alternate; }
+.player--dead { opacity: 0.3; }
+@keyframes shield-pulse { from { box-shadow: 0 0 4px 2px #fff; } to { box-shadow: 0 0 12px 6px #88f; } }

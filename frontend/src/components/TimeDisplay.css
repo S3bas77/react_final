@@ -1,0 +1,32 @@
+.time-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.5rem;
+}
+.time-display__clock {
+  font-variant-numeric: tabular-nums;
+}
+.time-display__clock + span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.time-display--warning {
+  color: #fbbf24;
+}
+.reactor-warning {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #b45309;
+  color: #fff;
+  font-weight: bold;
+  animation: reactor-blink 0.5s infinite alternate;
+}
+@keyframes reactor-blink {
+  from { opacity: 1; }
+  to   { opacity: 0.5; }
+}
