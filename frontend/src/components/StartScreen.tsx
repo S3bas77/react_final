@@ -28,7 +28,7 @@ export default function StartScreen({
     <div className="start-screen">
       <h1 className="start-screen__title">Reactor Rush</h1>
       <p className="start-screen__subtitle">
-        Dos jugadores compiten en la misma arena por capturar núcleos de energía.
+        Los dos jugadores compiten en la misma arena por capturar núcleos de energía.
         Gana quien alcance 25 puntos o lidere cuando termine el tiempo.
       </p>
 
